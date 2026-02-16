@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "outDir": "dist",
+      "rootDir": "./",
+      "target": "es2023",
+      "module": "commonjs",
+      "inlineSourceMap": true,
+      "inlineSources": true,
+      "esModuleInterop": true,
+      "types": ["node"]
+    },
+    "exclude": ["dist", "node_modules"]
+  }
+

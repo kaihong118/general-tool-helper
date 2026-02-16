@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "steoates.autoimport",
+    "spoonscen.es6-mocha-snippets",
+    "Compulim.vscode-mocha",
+    "hbenl.vscode-mocha-test-adapter",
+    "42Crunch.vscode-openapi",
+    "esbenp.prettier-vscode"
+  ]
+}

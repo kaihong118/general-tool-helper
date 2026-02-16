@@ -1,0 +1,11 @@
+{
+  "name": "general-tools",
+  "axios": {
+    "swapAgentAccessServer": {
+      "timeout": 30000
+    },
+    "abccWalletAccessServer": {
+      "timeout": 30000
+    }
+  }
+}

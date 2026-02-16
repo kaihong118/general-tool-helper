@@ -1,0 +1,20 @@
+# Env files
+.env
+.env.*
+!.env.local
+
+#json Files
+.json
+exportFeatures.json
+
+#Sql Files
+.sql
+
+# Custom
+.DS_Store
+node_modules
+dist
+logs
+.npmrc
+format
+excel

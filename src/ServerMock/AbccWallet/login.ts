@@ -10,7 +10,7 @@ const assignServerConfig = async () => {
   dotenv.config();
 
   const logger = LoggerHelper.createRotateLogger(
-    'general-tools',
+    'general-tool-helper',
     undefined,
     true,
     {

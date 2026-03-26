@@ -1,10 +1,10 @@
-import { createHmac, createHash } from 'crypto';
+import { createHash, createHmac } from 'crypto';
 
 export default class SecretGenerator {
   public static generateHashedSecret(
     email: string,
     password: string,
-    salt?: string
+    salt?: string,
   ) {
     if (salt) {
       const hashedPassword = createHmac('sha256', password, {
@@ -29,7 +29,7 @@ export default class SecretGenerator {
   public static verifyHmacBySHA256(
     data: string,
     key: string,
-    signature: string
+    signature: string,
   ) {
     const sign = createHash('sha256').update(data).digest('hex');
     return sign;
@@ -40,7 +40,7 @@ export default class SecretGenerator {
    * @param content content
    * @returns hashed value
    */
-  static generateSha256HashedSecret(content: string, secret: string): string {
+  static generateSha256HashedSecret(content: string): string {
     return createHash('sha256').update(`${content}`).digest('hex');
   }
 }

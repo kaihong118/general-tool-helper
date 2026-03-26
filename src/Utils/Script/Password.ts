@@ -1,11 +1,12 @@
 import PasswordHelper from '../UtilsHelper/PasswordHelper';
 
 console.log(
-  `A-abccAccountId-${PasswordHelper.generatePassword({
-    length: 5,
+  PasswordHelper.generatePassword({
+    length: 8,
+    symbols: false,
+    numbers: true,
     lowercase: false,
     uppercase: true,
     excludeSimilarCharacters: true,
-    numbers: true,
-  })}`
+  }),
 );

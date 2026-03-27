@@ -48,7 +48,7 @@ export async function testHostedCheckoutApiRequest() {
     transports: [new winston.transports.Console()],
   });
 
-  const baseURL = 'https://test-openapi-hk.qfapi.com';
+  const baseURL = '	https://openapi-int.qfapi.com';
   const appcode = 'YOUR_APPCODE';
   const clientKey = 'YOUR_CLIENT_KEY';
 

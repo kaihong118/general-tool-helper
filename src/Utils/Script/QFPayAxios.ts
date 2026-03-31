@@ -21,19 +21,15 @@ interface HostedCheckoutParams {
   mchntid?: string;
 }
 
-function buildSortedQuery(params: HostedCheckoutParams): string {
-  return Object.keys(params)
-    .sort()
-    .map((k) => `${k}=${params[k]}`)
-    .join('&');
-}
-
 function buildHostedCheckoutUrl(
   baseURL: string,
   params: HostedCheckoutParams,
   clientKey: string,
 ): string {
-  const sortedQuery = buildSortedQuery(params);
+  const sortedQuery = Object.keys(params)
+    .sort()
+    .map((k) => `${k}=${params[k]}`)
+    .join('&');
   const signPayload = `${sortedQuery}${clientKey}`;
   const sign = createHash('sha256').update(signPayload, 'utf8').digest('hex');
   return `${baseURL}/checkstand/#/?${sortedQuery}&sign=${sign}`;
@@ -45,7 +41,7 @@ export async function testHostedCheckoutApiRequest() {
     transports: [new winston.transports.Console()],
   });
 
-  const baseURL = 'https://test-openapi-hk.qfapi.com';
+  const baseURL = 'https://openapi-int.qfapi.com';
   const appcode = '90951A2954FE4CD7AD49BA5DCB010533';
   const clientKey = '4AFD0D10C54E42B5A9E9DE4217322A32';
 

@@ -1,7 +1,6 @@
 import { AxiosHelper } from '@wallet-manager/node-package-axios';
-import moment from 'moment';
+import { createHash } from 'crypto';
 import winston from 'winston';
-import SecretGenerator from '../UtilsHelper/SecretGenerator';
 
 type SignType = 'SHA256' | 'MD5';
 
@@ -23,10 +22,9 @@ interface HostedCheckoutParams {
 }
 
 function buildSortedQuery(params: HostedCheckoutParams): string {
-  return Object.entries(params)
-    .filter(([, value]) => value !== undefined && value !== '')
-    .sort(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey))
-    .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+  return Object.keys(params)
+    .sort()
+    .map((k) => `${k}=${params[k]}`)
     .join('&');
 }
 
@@ -36,9 +34,8 @@ function buildHostedCheckoutUrl(
   clientKey: string,
 ): string {
   const sortedQuery = buildSortedQuery(params);
-  const sign = SecretGenerator.generateSha256HashedSecret(
-    `${sortedQuery}${clientKey}`,
-  );
+  const signPayload = `${sortedQuery}${clientKey}`;
+  const sign = createHash('sha256').update(signPayload, 'utf8').digest('hex');
   return `${baseURL}/checkstand/#/?${sortedQuery}&sign=${sign}`;
 }
 
@@ -48,28 +45,29 @@ export async function testHostedCheckoutApiRequest() {
     transports: [new winston.transports.Console()],
   });
 
-  const baseURL = '	https://openapi-int.qfapi.com';
-  const appcode = 'YOUR_APPCODE';
-  const clientKey = 'YOUR_CLIENT_KEY';
+  const baseURL = 'https://test-openapi-hk.qfapi.com';
+  const appcode = '90951A2954FE4CD7AD49BA5DCB010533';
+  const clientKey = '4AFD0D10C54E42B5A9E9DE4217322A32';
 
   const requestParams: HostedCheckoutParams = {
     appcode,
     sign_type: 'SHA256',
     paysource: 'remotepay_checkout',
-    txamt: '1099',
+    txamt: '3',
     txcurrcd: 'HKD',
-    out_trade_no: 'TXN1234567890',
-    txdtm: moment().format('YYYY-MM-DD HH:mm:ss'),
+    out_trade_no: 'TXN1234567890101213',
+    txdtm: '2025-03-30 15:13:00',
     return_url: 'https://merchant.example/success',
     failed_url: 'https://merchant.example/failed',
     notify_url: 'https://merchant.example/notify',
     goods_name: 'checkout_product',
-    lang: 'en',
-    cancel_url: 'https://merchant.example/cancel',
   };
 
   const checkoutUrl = buildHostedCheckoutUrl(baseURL, requestParams, clientKey);
-  logger.info(`Checkout redirect URL: ${checkoutUrl}`);
+  // logger.info(`Checkout redirect URL: ${checkoutUrl}`);
+  logger.info(
+    `Checkout redirect URL (Decoded): ${decodeURIComponent(checkoutUrl)}`,
+  );
 
   const axiosInstance = await AxiosHelper.createAxios(
     {

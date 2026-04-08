@@ -1,60 +1,148 @@
-import { PasswordGenerator } from '@wallet-manager/node-lib/dist/src/generator';
 import { Timeout } from '@wallet-manager/node-package-util';
 import PQueue from 'p-queue';
 
-// type TimeOutFunction<T = unknown> = (timeout: any) => Promise<T>;
+type RiskGroup = 'customer' | 'card';
 
-// type NextFunction = () => void;
+interface RiskRule {
+  id: string;
+  group: RiskGroup;
+  timeoutMs: number;
+  mockLatencyMs: number;
+  evaluate: () => Promise<boolean>;
+}
 
-// type QueueFunction<T = void> = () => Promise<T>;
+interface RiskRuleResult {
+  id: string;
+  group: RiskGroup;
+  passed: boolean;
+  elapsedMs: number;
+  timeout: boolean;
+}
 
-class TimerQueue {
-  private queue: PQueue;
+// Simulate package call: pull configured credit-card risk rules from a shared library/service.
+async function getCreditCardRiskRulesFromPackage(): Promise<RiskRule[]> {
+  await Timeout(200);
 
-  constructor() {
-    this.queue = new PQueue({ concurrency: 1 });
-  }
+  return [
+    {
+      id: 'CUSTOMER_DAILY_TXN_COUNT',
+      group: 'customer',
+      timeoutMs: 5000,
+      mockLatencyMs: 1200,
+      evaluate: async () => {
+        await Timeout(1200);
+        return true;
+      },
+    },
+    {
+      id: 'CUSTOMER_BLACKLIST_MATCH',
+      group: 'customer',
+      timeoutMs: 5000,
+      mockLatencyMs: 800,
+      evaluate: async () => {
+        await Timeout(800);
+        return true;
+      },
+    },
+    {
+      id: 'CARD_VELOCITY_1H',
+      group: 'card',
+      timeoutMs: 5000,
+      mockLatencyMs: 1800,
+      evaluate: async () => {
+        await Timeout(1800);
+        return true;
+      },
+    },
+    {
+      id: 'CARD_COUNTRY_MISMATCH',
+      group: 'card',
+      timeoutMs: 5000,
+      mockLatencyMs: 5200,
+      evaluate: async () => {
+        await Timeout(5200);
+        return false;
+      },
+    },
+  ];
+}
 
-  async getTimer(name: string, ms: number) {
-    const uuid = PasswordGenerator.generateUuid();
-    console.time(`${name}-${uuid}`);
+async function executeRuleWithTimeout(rule: RiskRule): Promise<RiskRuleResult> {
+  const start = Date.now();
+  console.log(
+    `Executing rule ${rule.group} | ${rule.id} with timeout ${rule.timeoutMs}ms`,
+  );
 
-    const resp = await this.queue.add(async () => {
-      await Timeout(ms);
-      return ms;
-    });
-    if (resp) {
-      console.timeEnd(`${name}-${uuid}`);
-      return resp;
-    } else {
-      throw new Error();
-    }
-  }
+  const timeoutResult = Timeout(rule.timeoutMs).then(() => ({
+    timeout: true,
+    passed: false,
+  }));
+
+  const evaluateResult = rule.evaluate().then((passed) => ({
+    timeout: false,
+    passed,
+  }));
+
+  const result = await Promise.race([timeoutResult, evaluateResult]);
+
+  console.log(
+    `Completed rule ${rule.group} | ${rule.id} with timeout ${rule.timeoutMs}ms`,
+  );
+  return {
+    id: rule.id,
+    group: rule.group,
+    passed: result.passed,
+    timeout: result.timeout,
+    elapsedMs: Date.now() - start,
+  };
+}
+
+async function executeRuleGroup(
+  group: RiskGroup,
+  rules: RiskRule[],
+): Promise<RiskRuleResult[]> {
+  const queue = new PQueue({ concurrency: rules.length || 1 });
+
+  const jobs = rules.map((rule) =>
+    queue.add(async () => {
+      const result = await executeRuleWithTimeout(rule);
+      return result;
+    }),
+  );
+
+  const results = await Promise.all(jobs);
+  console.log(`[${group}] completed ${results.length} rule(s)`);
+  return results;
 }
 
 const main = async () => {
-  const timerQueue = new TimerQueue();
-  const timerQueue2 = new TimerQueue();
+  console.time('risk-check-total');
 
-  Promise.all([
-    timerQueue.getTimer('timerQueue', 4000),
-    timerQueue.getTimer('timerQueue', 4000),
-    timerQueue.getTimer('timerQueue', 4000),
-    timerQueue.getTimer('timerQueue', 4000),
-    timerQueue.getTimer('timerQueue', 4000),
+  const rules = await getCreditCardRiskRulesFromPackage();
+
+  const customerRules = rules.filter((rule) => rule.group === 'customer');
+  const cardRules = rules.filter((rule) => rule.group === 'card');
+
+  // Execute groups together to reduce total runtime.
+  const [customerResults, cardResults] = await Promise.all([
+    executeRuleGroup('customer', customerRules),
+    executeRuleGroup('card', cardRules),
   ]);
-  Promise.all([
-    timerQueue2.getTimer('timerQueue2', 2000),
-    timerQueue2.getTimer('timerQueue2', 2000),
-    timerQueue2.getTimer('timerQueue2', 2000),
-    timerQueue2.getTimer('timerQueue2', 2000),
-    timerQueue2.getTimer('timerQueue2', 2000),
-    timerQueue2.getTimer('timerQueue2', 2000),
-    timerQueue2.getTimer('timerQueue2', 2000),
-    timerQueue2.getTimer('timerQueue2', 2000),
-    timerQueue2.getTimer('timerQueue2', 2000),
-    timerQueue2.getTimer('timerQueue2', 2000),
-  ]);
+
+  const allResults = [...customerResults, ...cardResults];
+  const blocked = allResults.some((result) => !result.passed || result.timeout);
+
+  for (const result of allResults) {
+    console.log(
+      `${result.group} | ${result.id} | passed=${result.passed} | timeout=${result.timeout} | elapsed=${result.elapsedMs}ms`,
+    );
+  }
+
+  console.log(`Final decision: ${blocked ? 'REJECT' : 'APPROVE'}`);
+  console.timeEnd('risk-check-total');
 };
 
-main();
+main().catch((error) => {
+  console.error('Risk rule execution failed', error);
+  process.exitCode = 1;
+});

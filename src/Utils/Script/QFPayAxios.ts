@@ -19,6 +19,7 @@ interface HostedCheckoutParams {
   lang?: 'zh-hk' | 'zh-cn' | 'en';
   cancel_url?: string;
   mchntid?: string;
+  [key: string]: string | SignType | undefined;
 }
 
 function buildHostedCheckoutUrl(

@@ -21,7 +21,7 @@ const logger = winston.createLogger({
 //Merchant6: 0x546f61c5b7b4079e62e5021aeddbf7436eeaef3a3bdabc7943a4ffab1490cc5e
 
 const keyPair = PasswordHelper.generateKeyPair(
-  '0x96e7f062b343ab083fdb91fd0eab42d836b247a81d4bf4169c902e687e2e085c',
+  '0x77fe49c0ba734a9a9f8154c45dd7d3982fef98a42344ce2bdca3ef3d391e8d5b',
 );
 logger.info(`Public Key: ${keyPair.signingKey.publicKey}`);
 logger.info(`Compressed Public Key: ${keyPair.signingKey.compressedPublicKey}`);

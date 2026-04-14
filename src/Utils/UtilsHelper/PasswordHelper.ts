@@ -16,7 +16,7 @@ export default class PasswordHelper {
    */
   public static generateKeyPair(
     privateKey?: string | SigningKey,
-    provider?: Provider
+    provider?: Provider,
   ): ethers.Wallet {
     let keyPair;
     if (privateKey) {
@@ -25,6 +25,6 @@ export default class PasswordHelper {
       keyPair = ethers.Wallet.createRandom();
     }
 
-    return keyPair;
+    return keyPair as ethers.Wallet;
   }
 }

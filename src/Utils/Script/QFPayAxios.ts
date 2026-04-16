@@ -1,4 +1,3 @@
-import { AxiosHelper } from '@wallet-manager/node-package-axios';
 import { createHash } from 'crypto';
 import winston from 'winston';
 
@@ -43,21 +42,20 @@ export async function testHostedCheckoutApiRequest() {
   });
 
   const baseURL = 'https://openapi-int.qfapi.com';
-  const appcode = '90951A2954FE4CD7AD49BA5DCB010533';
-  const clientKey = '4AFD0D10C54E42B5A9E9DE4217322A32';
+  const appcode = 'FA01F8A3328945A491DA223C6D7700F1';
+  const clientKey = '8C1D50C198EE4D51939746CD70485F7F';
 
   const requestParams: HostedCheckoutParams = {
     appcode,
     sign_type: 'SHA256',
-    paysource: 'remotepay_checkout',
-    txamt: '3',
+    paysource: 'remote_checkout',
+    txamt: '33300',
     txcurrcd: 'HKD',
-    out_trade_no: 'TXN1234567890101213',
-    txdtm: '2025-03-30 15:13:00',
-    return_url: 'https://merchant.example/success',
-    failed_url: 'https://merchant.example/failed',
-    notify_url: 'https://merchant.example/notify',
-    goods_name: 'checkout_product',
+    out_trade_no: '64382132-32a5-4746-af94-a4b204ef392a',
+    txdtm: '2026-04-16 02:20:02',
+    return_url: 'https://gw-paywiser-web.dev.pfh-in.com/status',
+    failed_url: 'https://gw-paywiser-web.dev.pfh-in.com/status',
+    notify_url: 'https://gw-qfpay-handler.dev.pfh-in.com/qfpay-callback',
   };
 
   const checkoutUrl = buildHostedCheckoutUrl(baseURL, requestParams, clientKey);
@@ -66,20 +64,20 @@ export async function testHostedCheckoutApiRequest() {
     `Checkout redirect URL (Decoded): ${decodeURIComponent(checkoutUrl)}`,
   );
 
-  const axiosInstance = await AxiosHelper.createAxios(
-    {
-      baseURL,
-      timeout: 30000,
-      sensitiveEndpointSetting: {},
-    },
-    logger,
-  );
+  // const axiosInstance = await AxiosHelper.createAxios(
+  //   {
+  //     baseURL,
+  //     timeout: 30000,
+  //     sensitiveEndpointSetting: {},
+  //   },
+  //   logger,
+  // );
 
   // Smoke check: hosted checkout is a redirect page, so a 200 HTML response means request URL is accepted.
-  const endpoint = checkoutUrl.replace(`${baseURL}`, '');
-  const result = await axiosInstance.get<string>(endpoint);
-  logger.info(`Checkout page response data: ${result.data}`);
-  logger.info(`Checkout page response status: ${result.status}`);
+  // const endpoint = checkoutUrl.replace(`${baseURL}`, '');
+  // const result = await axiosInstance.get<string>(endpoint);
+  // logger.info(`Checkout page response data: ${result.data}`);
+  // logger.info(`Checkout page response status: ${result.status}`);
 }
 
 export async function test() {

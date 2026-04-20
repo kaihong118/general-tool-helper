@@ -63,9 +63,9 @@ async function run() {
   outputSql += '\nCOMMIT;';
 
   UtilHelper.writeFile(
-    `/Users/lucas/Downloads/SQL/[swap_agent] Data patch to update idvMethod and questionType (${ticketNo}) ${moment().format(
-      'YYYYMMDD',
-    )}.sql`,
+    `/Users/lucas/Downloads/SQL/${moment().format(
+      'YYYY-MM-DD HH:mm',
+    )} [swap_agent] Data patch agent program (${ticketNo}).sql`,
     outputSql,
   );
 

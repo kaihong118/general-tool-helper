@@ -52,9 +52,9 @@ async function run() {
   outputSql += '\nCOMMIT;';
 
   UtilHelper.writeFile(
-    `/Users/lucas/Downloads/SQL/[pmp_access] Add new event mapping ${moment().format(
-      'YYYYMMDD',
-    )}.sql`,
+    `/Users/lucas/Downloads/SQL/${moment().format(
+      'YYYY-MM-DD HH:mm',
+    )}[pmp_access] data patch event message mapping.sql`,
     outputSql,
   );
 

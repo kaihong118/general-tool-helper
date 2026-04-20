@@ -61,9 +61,9 @@ async function run() {
   outputSql += '\nCOMMIT;';
 
   UtilHelper.writeFile(
-    `/Users/lucas/Downloads/SQL/[swap_agent] Data patch to update supportedPlatform (${ticketNo}) ${moment().format(
-      'YYYYMMDD',
-    )}.sql`,
+    `/Users/lucas/Downloads/SQL/${moment().format(
+      'YYYY-MM-DD HH:mm',
+    )} [swap_agent] data patch distributor agent program (${ticketNo}).sql`,
     outputSql,
   );
 

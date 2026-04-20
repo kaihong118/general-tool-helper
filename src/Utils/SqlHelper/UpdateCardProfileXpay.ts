@@ -129,9 +129,9 @@ async function run() {
   outputSql += '\nCOMMIT;';
 
   UtilHelper.writeFile(
-    `/Users/lucas/Downloads/SQL/[pmp_access] Data patch to update card profile xpay (${ticketNo}) ${moment().format(
-      'YYYYMMDD',
-    )}.sql`,
+    `/Users/lucas/Downloads/SQL/${moment().format(
+      'YYYY-MM-DD HH:mm',
+    )} [pmp_access] data patch card profile config (${ticketNo}).sql`,
     outputSql,
   );
 

@@ -62,7 +62,7 @@ async function run() {
 
   UtilHelper.writeFile(
     `/Users/lucas/Downloads/SQL/${moment().format(
-      'YYYY-MM-DD HH:mm',
+      'YYYY-MM-DD HHmm',
     )} [swap_agent] data patch distributor agent program (${ticketNo}).sql`,
     outputSql,
   );

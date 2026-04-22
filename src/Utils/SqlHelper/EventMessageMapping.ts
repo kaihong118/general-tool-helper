@@ -53,7 +53,7 @@ async function run() {
 
   UtilHelper.writeFile(
     `/Users/lucas/Downloads/SQL/${moment().format(
-      'YYYY-MM-DD HH:mm',
+      'YYYY-MM-DD HHmm',
     )}[pmp_access] data patch event message mapping.sql`,
     outputSql,
   );

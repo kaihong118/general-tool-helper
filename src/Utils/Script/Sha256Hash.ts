@@ -14,5 +14,5 @@ const txaction = 'PREAUTH';
 const dataString = `${sid};${rcode};${txid};${status1};${amount};${currency};${txaction}`;
 console.log(dataString);
 
-const result = SecretGenerator.generateSha256HashedSecret(dataString, '');
+const result = SecretGenerator.generateSha256HashedSecret(dataString);
 console.log(result);

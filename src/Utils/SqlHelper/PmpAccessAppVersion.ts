@@ -5,8 +5,7 @@ const template = `
 -- :name
 UPDATE pmp_access.app_versions
 SET
-    latest_version = ':latestVersion',
-    min_supported_version = ':minSupportedVersion'
+    latest_version = ':latestVersion'
 WHERE
     merchant_id = :merchantId
     and source = :source;
@@ -17,22 +16,22 @@ const data = [
     name: 'IOS & Android [PFH App]',
     merchantId: 6,
     source: 1,
-    latestVersion: '1.0.7',
-    minSupportedVersion: '1.0.7',
+    latestVersion: '2.2.30',
+    minSupportedVersion: '2.2.29',
   },
   {
     name: 'IOS & Android [Double Pay]',
     merchantId: 6,
     source: 2,
-    latestVersion: '1.0.7',
-    minSupportedVersion: '1.0.7',
+    latestVersion: '2.2.30',
+    minSupportedVersion: '2.2.29',
   },
   {
     name: 'IOS & Android [ABCC+]',
     merchantId: 6,
     source: 3,
-    latestVersion: '1.0.7',
-    minSupportedVersion: '1.0.7',
+    latestVersion: '1.0.10',
+    minSupportedVersion: '1.0.9',
   },
 ];
 

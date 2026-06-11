@@ -4,8 +4,7 @@ import UtilHelper from './UtilsHelper';
 const template = `
 UPDATE swap_agent.app_versions
 SET
-    latest_version = ':latestVersion',
-    min_supported_version = ':minSupportedVersion'
+    latest_version = ':latestVersion'
 WHERE
     merchant_id = :merchantId;
 `;
@@ -13,8 +12,8 @@ WHERE
 const data = [
   {
     merchantId: 6,
-    latestVersion: '1.0.7',
-    minSupportedVersion: '1.0.7',
+    latestVersion: '1.0.18',
+    minSupportedVersion: '1.0.17',
   },
 ];
 

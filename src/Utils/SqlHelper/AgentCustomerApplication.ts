@@ -5,7 +5,7 @@ const template = `
 -- :applicationNumber
 update swap_agent.agent_customer_applications
 set
-    status = '6',
+    status = '2',
     error = null
 where
     application_number = ':applicationNumber'

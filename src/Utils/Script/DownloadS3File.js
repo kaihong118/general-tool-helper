@@ -4,6 +4,13 @@ import { join, basename } from "path";
 
 const outputBaseDir = join(process.cwd(), "daily-report", "uat-DailyReport");
 
+const s3Client = new S3Client({
+  region: "ap-east-1",
+  credentials: {
+    accessKeyId: "",
+    secretAccessKey: "",
+  },
+});
 
 async function downloadFile(bucket, key, filePath) {
   try {

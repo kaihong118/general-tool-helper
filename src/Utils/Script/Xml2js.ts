@@ -7,11 +7,13 @@ const fieldIdMapping: Record<string, string> = {
   '4': 'transactionAmount',
   '6': 'cardholderBillingAmount',
   '7': 'transmissionDateTime',
+  '10': 'conversionRateCardholderBilling',
   '11': 'systemsTraceAuditNumber',
   '12': 'localTransactionTime',
   '13': 'localTransactionDate',
   '14': 'expirationDate',
   '15': 'settlementDate',
+  '16': 'conversionDate',
   '18': 'merchantType',
   '19': 'acquiringInstitutionCountryCode',
   '20': 'panExtendedCountryCode',
@@ -26,8 +28,12 @@ const fieldIdMapping: Record<string, string> = {
   '43': 'cardAcceptorNameLocation',
   '49': 'transactionCurrencyCode',
   '51': 'cardholderBillingCurrencyCode',
+  '55': 'iccData',
+  '56': 'originalDataElements',
+  '61': 'reservedPrivate1',
   '60': 'reservedNational',
   '62': 'reservedPrivate',
+  '63': 'reservedPrivate2',
   '62.2': 'originalRetrievalReferenceNumber',
 };
 
@@ -44,7 +50,7 @@ type XmlJsIsoMsg = {
 };
 
 const xmlData =
-  '<isomsg> <field id="0" value="0200"/> <field id="2" value="*"/> <field id="3" value="050000"/> <field id="4" value="000000015000"/> <field id="6" value="000000015000"/> <field id="7" value="0605071627"/> <field id="11" value="787227"/> <field id="14" value="2606"/> <field id="15" value="0605"/> <field id="18" value="5812"/> <field id="19" value="840"/> <field id="20" value="840"/> <field id="22" value="0200" type="binary"/> <field id="23" value="001"/> <field id="25" value="02"/> <field id="32" value="12345678901"/> <field id="37" value="780643751317"/> <field id="38" value="774987"/> <field id="41" value="12345678"/> <field id="42" value="123456789012345"/> <field id="43" value="Foodpanda, Hong Kong Hong Kong HK"/> <field id="49" value="344"/> <field id="51" value="344"/> <field id="60" value="100000000000" type="binary"/> <isomsg id="62"> <field id="2" value="0178064375131797"/> </isomsg></isomsg>';
+  '<isomsg><field id=\"0\" value=\"0100\"/><field id=\"2\" value=\"*\"/><field id=\"3\" value=\"000000\"/><field id=\"4\" value=\"000000005633\"/><field id=\"6\" value=\"000000003755\"/><field id=\"7\" value=\"0315160425\"/><field id=\"10\" value=\"76666000\"/><field id=\"11\" value=\"000004\"/><field id=\"12\" value=\"160425\"/><field id=\"13\" value=\"0315\"/><field id=\"15\" value=\"0315\"/><field id=\"16\" value=\"0315\"/><field id=\"18\" value=\"5311\"/><field id=\"22\" value=\"072\"/><field id=\"23\" value=\"001\"/><field id=\"32\" value=\"999901\"/><field id=\"37\" value=\"085037100011\"/><field id=\"41\" value=\"MTF TEST\"/><field id=\"42\" value=\"ABC123TESTMTF19\"/><field id=\"43\" value=\"Department Store       Las Vegas         USA \"/><field id=\"49\" value=\"840\"/><field id=\"51\" value=\"826\"/><field id=\"55\" value=\"5F2A020840820258008407A0000000041010950500000000009A032203159C01009F02060000000056339F10120110250000044000DAC100000000000000009F1A0208409F2608F74B81A9433809289F2701809F3303E0E8E89F34034103029F360201409F37042B65FF1F\" type=\"binary\"/><field id=\"56\" value=\"013301295001ABCDEFGHIJ123456789012345\"/><field id=\"61\" value=\"000000000030084011111-1111\"/><field id=\"63\" value=\"MRW011B63\"/></isomsg>';
 
 const jsonData = xml2js(xmlData, { compact: true }) as {
   isomsg?: XmlJsIsoMsg;

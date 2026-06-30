@@ -26,6 +26,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1076.0",
     "@ethersproject/abstract-signer": "^5.7.0",
     "@wallet-manager/node-package-axios": "^1.0.52",
     "@wallet-manager/node-package-db": "^1.0.38",

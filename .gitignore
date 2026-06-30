@@ -18,3 +18,5 @@ logs
 .npmrc
 format
 excel
+daily-report
+/package-lock.json

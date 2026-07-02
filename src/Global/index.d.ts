@@ -27,6 +27,8 @@ declare global {
   // var auditLogs: AuditLog[];
   var axiosSwapAgentServer: AxiosInstance;
   var axiosAbccWalletAccessServer: AxiosInstance;
+  var axiosAbccWalletAccessServer: AxiosInstance;
+  var axiosE6SimulatorServer: AxiosInstance;
 
   namespace NodeJS {
     interface ProcessEnv {

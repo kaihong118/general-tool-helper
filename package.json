@@ -7,6 +7,7 @@
     "script": "ts-node src/Utils/Script/$file",
     "cams": "ts-node src//ServerMock/Cams/$file",
     "abccWallet": "ts-node src/ServerMock/AbccWallet/$file",
+    "e6Simulator": "ts-node src/ServerMock/E6Simulator/$file",
     "task": "tsc -p .",
     "start:inspect": "nodemon --exec \"node --require ts-node/register --inspect=1234 index.ts\"",
     "latest:pmpTypes": "npm install @wallet-manager/pfh-pmp-node-def-types@latest",

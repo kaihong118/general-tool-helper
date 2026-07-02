@@ -5,5 +5,6 @@ export default interface APIConfig {
   axios: {
     swapAgentAccessServer: AxiosConfig;
     abccWalletAccessServer: AxiosConfig;
+    e6SimulatorServer: AxiosConfig;
   };
 }

@@ -6,6 +6,9 @@
     },
     "abccWalletAccessServer": {
       "timeout": 30000
+    },
+    "e6SimulatorServer": {
+      "timeout": 30000
     }
   }
 }

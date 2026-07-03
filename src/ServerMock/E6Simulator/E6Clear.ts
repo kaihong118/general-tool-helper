@@ -46,7 +46,7 @@ const assignServerConfig = async () => {
 };
 
 const testApi = async (logger: winston.Logger) => {
-  const endpoint = '/payment/simulator/authorize';
+  const endpoint = '/payment/simulator/clear';
 
   const acquirerAmount = 100;
   const billingAmount = 100;
@@ -74,19 +74,10 @@ const testApi = async (logger: winston.Logger) => {
     partialAuth: false,
   };
 
-  const response = (await globalThis.axiosE6SimulatorServer.post(
+  const response = await globalThis.axiosE6SimulatorServer.post(
     endpoint,
     reqBody,
-  )) as unknown as {
-    data: { requestMsg: string; responseMsg: string };
-  };
-
-  if (response.data) {
-    globalThis.serviceConfig.e6SimulatorTransactionInfo = {
-      e6SimulatorRequestMsg: JSON.stringify(response.data.requestMsg),
-      e6SimulatorResponseMsg: JSON.stringify(response.data.responseMsg),
-    };
-  }
+  );
 
   console.log(JSON.stringify(response.data, null, 2));
 };

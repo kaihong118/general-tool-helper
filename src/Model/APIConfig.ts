@@ -7,9 +7,4 @@ export default interface APIConfig {
     abccWalletAccessServer: AxiosConfig;
     e6SimulatorServer: AxiosConfig;
   };
-
-  e6SimulatorTransactionInfo: {
-    e6SimulatorRequestMsg: string;
-    e6SimulatorResponseMsg: string;
-  };
 }

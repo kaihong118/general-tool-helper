@@ -1,22 +1,22 @@
-import moment from 'moment';
 import { ethers } from 'ethers';
+import moment from 'moment';
 
 export default class MessageHelper {
   public static genHashedMessage(
     timestamp: string,
     session: string,
     sequence: string,
-    body: string
+    body: string,
   ) {
     const _temp = `${timestamp}#${session}#${sequence}#${body}`;
-    const _hashedMsg = ethers.utils.toUtf8Bytes(_temp);
-    return ethers.utils.sha256(_hashedMsg);
+    const _hashedMsg = ethers.toUtf8Bytes(_temp);
+    return ethers.sha256(_hashedMsg);
   }
 
   public static sign(hashedMessage: string, privateKey: string) {
-    const _signingKey = new ethers.utils.SigningKey(privateKey);
-    const _signDigest = _signingKey.signDigest(hashedMessage);
-    return ethers.utils.joinSignature(_signDigest);
+    const _signingKey = new ethers.SigningKey(privateKey);
+    const _signDigest = _signingKey.sign(hashedMessage);
+    return _signDigest.serialized;
   }
 
   public static createRequestHeader(
@@ -25,7 +25,7 @@ export default class MessageHelper {
     session: string,
     sequence: number,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any
+    data: any,
   ) {
     const timeStamp = moment().valueOf().toString();
     const _dataStr = !data || data === '' ? '' : JSON.stringify(data);
@@ -33,7 +33,7 @@ export default class MessageHelper {
       timeStamp,
       session,
       sequence.toString(),
-      _dataStr
+      _dataStr,
     );
     const Signature = this.sign(Hash, privateKey);
     const headers = {

@@ -81,12 +81,8 @@ const testApi = async (logger: winston.Logger) => {
     data: { requestMsg: string; responseMsg: string };
   };
 
-  if (response.data) {
-    globalThis.serviceConfig.e6SimulatorTransactionInfo = {
-      e6SimulatorRequestMsg: JSON.stringify(response.data.requestMsg),
-      e6SimulatorResponseMsg: JSON.stringify(response.data.responseMsg),
-    };
-  }
+  const e6SimulatorRequestMsg = JSON.stringify(response.data.requestMsg);
+  const e6SimulatorResponseMsg = JSON.stringify(response.data.responseMsg);
 
   console.log(JSON.stringify(response.data, null, 2));
 };

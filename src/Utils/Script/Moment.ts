@@ -133,6 +133,7 @@ const duration = moment.duration(
 );
 console.log('Duration in days:', duration.asDays());
 console.log('Duration in hours:', duration.asHours());
+console.log('Duration in months:', duration.asMonths());
 console.log('Duration humanized:', duration.humanize());
 
 // Calendar time

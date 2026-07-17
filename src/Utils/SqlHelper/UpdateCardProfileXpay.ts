@@ -32,7 +32,9 @@ where
 const updateXpayTemplate = `
 update pmp_access.merchant_program_card_profile_configs
 set
-    support_xpay = :supportXpay
+    support_xpay = :supportXpay,
+    last_modified_by = 'Auto',
+    last_modified_date = now ()
 where
     merchant_id = :merchantId
     and program_name = ':programName'
@@ -63,26 +65,16 @@ where
 
 const data = [
   {
-    id: 86,
+    id: 2510,
     merchant_id: 6,
-    program_name: 'VGL-E006-BLUEP05',
-    card_profile_name: 'VGL-E006-BLUEP05_009',
-    status: 1,
-    created_date: '2025-01-15T02:47:45.550Z',
-    last_modified_date: '2025-01-15T02:47:45.550Z',
-    created_by: 'import',
-    modified_by: 'import',
-  },
-  {
-    id: 210,
-    merchant_id: 6,
-    program_name: 'VGL-E006-BLUEP05',
-    card_profile_name: 'Virtual_Quick Ext Apple Pay_001',
-    status: 1,
-    created_date: '2025-05-22T11:59:45.461Z',
-    last_modified_date: '2025-05-22T11:59:45.461Z',
-    created_by: null,
-    modified_by: null,
+    program_name: 'VAFFILIATE-G001-SGreenP983',
+    card_profile_name: 'VAFFILIATE-G001-SGreenP983_TestXpay',
+    status: -1,
+    created_date: '2026-06-29T10:04:05.737Z',
+    last_modified_date: '2026-06-30T09:12:18.496Z',
+    created_by: 'marilynwong@pfh.hk',
+    modified_by: 'marilynwong@pfh.hk',
+    renewable: true,
   },
 ];
 

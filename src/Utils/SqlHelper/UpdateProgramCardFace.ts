@@ -4,9 +4,9 @@ import UtilHelper from './UtilsHelper';
 const template = `
 -- :programName
 update
-	merchant_program_configs
+	pmp_access.merchant_program_configs
 set
-	background_thumbnail = ':backgroundThumbnail',
+	background_thumbnail = ':backgroundThumbnail'
 where
 	id = :id
   and merchant_id = :merchantId
@@ -27,12 +27,12 @@ const data = [
     background_type: 1,
     background: 'https:\/\/static.prod.pfh-in.com\/app\/pfh_water_mark.png',
     background_thumbnail:
-      'https:\/\/static.prod.pfh-in.com\/app\/GreenCard.png',
+      'https:\/\/static.prod.pfh-in.com\/app\/QuickCard.png',
     logo: 'https:\/\/static.prod.pfh-in.com\/app\/gl_logo.png',
     created_by: 'auto',
     created_date: '2025-02-13T11:33:33.091Z',
-    last_modified_by: 'auto',
-    last_modified_date: '2025-02-13T11:33:33.091Z',
+    last_modified_by: 'Auto',
+    last_modified_date: '2026-07-08T03:38:35.673Z',
     vip_level: null,
   },
 ];
@@ -54,7 +54,7 @@ async function run() {
       id: x.id,
       merchantId: x.merchant_id,
       programName: x.program_name,
-      backgroundThumbnail: 'https://static.prod.pfh-in.com/app/QuickCard.png',
+      backgroundThumbnail: 'https://static.prod.pfh-in.com/app/QuickCard_H.png',
     });
 
     outputSql += sql;

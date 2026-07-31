@@ -12,7 +12,7 @@ const alertLevel = BigNumber(
   thresholdAmount
     .minus(balance)
     .dividedBy(stepAmount)
-    .toFormat(0, BigNumber.ROUND_FLOOR)
+    .toFormat(0, BigNumber.ROUND_FLOOR),
 );
 
 const alertStep = thresholdAmount

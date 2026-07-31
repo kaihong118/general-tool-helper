@@ -41,7 +41,8 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "window.zoomLevel": 0,
   "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
   },
   "cSpell.words": [
     "backoffice",

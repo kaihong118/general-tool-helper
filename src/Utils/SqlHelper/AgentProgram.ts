@@ -8,7 +8,7 @@ UPDATE swap_agent.agent_programs
 SET
   kyc_idv_method = :kycMethod,
   question_type = :questionType,
-  last_modified_by = :lastModifiedBy,
+  last_modified_by = ':lastModifiedBy',
   last_modified_date = now ()
 WHERE
   id = ':id'
@@ -18,21 +18,21 @@ WHERE
 
 const data = [
   {
-    id: 25,
-    program_agent_id: 'PA-E005',
-    program_name: 'HKD_P58_DISTRIBUTION',
+    id: 188,
+    program_agent_id: 'PA-E020',
+    program_name: 'VTitanSign-E020-P80',
     created_by: null,
-    created_date: '2024-06-14T04:01:50.680Z',
+    created_date: '2025-12-02T09:52:38.021Z',
     last_modified_by: null,
     last_modified_date: '2025-12-22T07:25:49.973Z',
-    program_display_name: 'P58',
+    program_display_name: 'HKDM Titan Signature',
     program_currency: 'HKD',
     credit_token_name: 'HKDM',
     credit_currency: 'HKDM-ERC20',
     kyc_idv_method: 1,
     question_type: 2,
     kyc_level: 1,
-    vip_level: 'abcc_card',
+    vip_level: 'credit_card',
   },
 ];
 

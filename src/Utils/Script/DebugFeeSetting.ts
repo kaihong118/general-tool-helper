@@ -104,13 +104,8 @@ const feePlan: FeePlanInput = {
 };
 
 const billingAmount = '80';
-
 const isIncrementalAuth = false;
-
-/** feeAmount from the request body - the base of ledgerFee */
 const feeAmount = 0;
-
-/** currencyObj.decimals from RedisCurrency */
 const decimals = 6;
 
 // ============================================================================
@@ -136,6 +131,10 @@ function calculateFeeSetting(
   let additionalFixedFeeAmount = BigNumber(0);
   let additionalRateAmountBn = BigNumber(0);
   const feePlan = { ...feeSetting };
+
+  if (isIncrementalAuth && billingBn.isNegative()) {
+    return undefined;
+  }
 
   fixedFeeAmountBn = BigNumber(feePlan.fixedFee || 0).plus(
     BigNumber(feePlan.markupFixedFee || 0),
@@ -193,7 +192,9 @@ function run() {
 
   if (!result) {
     console.log('\n===== RESULT =====');
-    console.log('calculateFeeSetting returned undefined (feePlans was null)');
+    console.log(
+      'calculateFeeSetting returned undefined (feePlans was null, or isIncrementalAuth with negative billingAmount)',
+    );
     return;
   }
 

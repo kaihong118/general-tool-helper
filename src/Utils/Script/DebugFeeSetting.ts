@@ -72,38 +72,38 @@ interface FeePlanInput {
 
 const feePlan: FeePlanInput = {
   feeSetting: {
-    id: '143',
+    id: '465',
+    programName: 'pfh_finance_consumer_wallet_dev',
+    feeName: 'local_purchase_default',
+    fixedFee: '0',
+    feeRate: '2.21',
+    markupFixedFee: '0',
+    markupFeeRate: '2.21',
     status: 1,
-    feeName: 'oversea_purchase_default',
-    feeRate: '6.88',
-    fixedFee: '5.88',
-    createdBy: 'qa02+00@18m.dev',
-    createdDate: '2026-11-03T09:48:22.042Z',
-    programName: 'pmp_coop_consumer_wallet_uat',
-    markupFeeRate: '8.88',
-    lastModifiedBy: 'qa02+00@18m.dev',
-    markupFixedFee: '7.88',
+    createdDate: '2026-11-04T08:12:08.523Z',
+    lastModifiedDate: '2026-11-04T08:12:08.523Z',
+    effectiveDateFrom: '2026-11-04T08:12:07.964Z',
     effectiveDateTo: null,
-    lastModifiedDate: '2026-11-03T09:48:22.042Z',
-    effectiveDateFrom: '2026-11-03T09:48:21.521Z',
+    createdBy: 'eu39@18m.dev',
+    lastModifiedBy: 'eu39@18m.dev',
   },
   additionalFeeSetting: {
-    id: '54',
-    status: 1,
-    feeRate: '7.88',
-    fixedFee: '6.88',
-    createdDate: '2026-11-03T09:48:22.452Z',
-    programName: 'pmp_coop_consumer_wallet_uat',
-    feeSettingId: '143',
-    markupFeeRate: '9.88',
-    markupFixedFee: '8.88',
+    id: '89',
+    programName: 'pfh_finance_consumer_wallet_dev',
+    feeSettingId: '465',
+    cardAcceptorCountryCode: 'HK',
     acquirerCurrency: null,
-    lastModifiedDate: '2026-11-03T09:48:22.452Z',
-    cardAcceptorCountryCode: 'US',
+    fixedFee: '0',
+    feeRate: '2.21',
+    markupFixedFee: '0',
+    markupFeeRate: '2.21',
+    status: 1,
+    createdDate: '2026-11-04T08:12:08.720Z',
+    lastModifiedDate: '2026-11-04T08:12:08.720Z',
   },
 };
 
-const billingAmount = '80';
+const billingAmount = '3';
 const isIncrementalAuth = false;
 const feeAmount = 0;
 const decimals = 6;
@@ -113,7 +113,7 @@ const decimals = 6;
 // ============================================================================
 
 /**
- * Exact clone of FeeService.calculateFeeSetting.
+ * Clone of FeeService.calculateFeeSetting with each rate component rounded up before summing.
  */
 function calculateFeeSetting(
   feePlans: FeePlanInput | null,
@@ -142,30 +142,44 @@ function calculateFeeSetting(
 
   feeRateAmountBn = billingBn
     .times(BigNumber(feePlan.feeRate).div(100))
-    .plus(billingBn.times(BigNumber(feePlan.markupFeeRate).div(100)));
+    .decimalPlaces(2, BigNumber.ROUND_UP)
+    .plus(
+      billingBn
+        .times(BigNumber(feePlan.markupFeeRate).div(100))
+        .decimalPlaces(2, BigNumber.ROUND_UP),
+    );
 
   if (additionalFeeSetting) {
     feePlan.additionalFeeSetting = { ...additionalFeeSetting };
 
-    additionalFixedFeeAmount = BigNumber(
-      additionalFeeSetting.fixedFee || 0,
-    ).plus(BigNumber(additionalFeeSetting.markupFixedFee || 0));
+    additionalFixedFeeAmount = BigNumber(additionalFeeSetting.fixedFee || 0)
+      .decimalPlaces(2, BigNumber.ROUND_UP)
+      .plus(
+        BigNumber(additionalFeeSetting.markupFixedFee || 0).decimalPlaces(
+          2,
+          BigNumber.ROUND_UP,
+        ),
+      );
 
     additionalRateAmountBn = billingBn
       .times(BigNumber(additionalFeeSetting.feeRate || 0).div(100))
+      .decimalPlaces(2, BigNumber.ROUND_UP)
       .plus(
-        billingBn.times(
-          BigNumber(additionalFeeSetting.markupFeeRate || 0).div(100),
-        ),
+        billingBn
+          .times(BigNumber(additionalFeeSetting.markupFeeRate || 0).div(100))
+          .decimalPlaces(2, BigNumber.ROUND_UP),
       );
   }
 
   const fixedFeeAmount = isIncrementalAuth
     ? 0
-    : fixedFeeAmountBn.plus(additionalFixedFeeAmount).toNumber();
+    : fixedFeeAmountBn
+        .decimalPlaces(2, BigNumber.ROUND_UP)
+        .plus(additionalFixedFeeAmount)
+        .toNumber();
   const feeRateAmount = feeRateAmountBn
-    .plus(additionalRateAmountBn)
     .decimalPlaces(2, BigNumber.ROUND_UP)
+    .plus(additionalRateAmountBn.decimalPlaces(2, BigNumber.ROUND_UP))
     .toNumber();
 
   return { feePlan, fixedFeeAmount, feeRateAmount };
@@ -200,6 +214,64 @@ function run() {
 
   const { feeSetting, additionalFeeSetting } = feePlan;
   const billingBn = BigNumber(billingAmount || 0);
+  const rateFeeComponents = [
+    {
+      name: 'feeSetting.feeRate',
+      rawAmount: billingBn.times(BigNumber(feeSetting.feeRate).div(100)),
+    },
+    {
+      name: 'feeSetting.markupFeeRate',
+      rawAmount: billingBn.times(BigNumber(feeSetting.markupFeeRate).div(100)),
+    },
+  ];
+
+  if (additionalFeeSetting) {
+    rateFeeComponents.push(
+      {
+        name: 'additionalFeeSetting.feeRate',
+        rawAmount: billingBn.times(
+          BigNumber(additionalFeeSetting.feeRate || 0).div(100),
+        ),
+      },
+      {
+        name: 'additionalFeeSetting.markupFeeRate',
+        rawAmount: billingBn.times(
+          BigNumber(additionalFeeSetting.markupFeeRate || 0).div(100),
+        ),
+      },
+    );
+  }
+
+  const roundAfterSumming = rateFeeComponents
+    .reduce((total, component) => total.plus(component.rawAmount), BigNumber(0))
+    .decimalPlaces(2, BigNumber.ROUND_UP);
+  const roundEachBeforeSumming = rateFeeComponents.reduce(
+    (total, component) =>
+      total.plus(component.rawAmount.decimalPlaces(2, BigNumber.ROUND_UP)),
+    BigNumber(0),
+  );
+
+  console.log('\n===== RATE ROUNDING COMPARISON =====');
+  for (const component of rateFeeComponents) {
+    console.log(
+      `${component.name}: raw ${component.rawAmount.toString()} -> rounded ${component.rawAmount
+        .decimalPlaces(2, BigNumber.ROUND_UP)
+        .toString()}`,
+    );
+  }
+  console.log('Round after summing components :', roundAfterSumming.toString());
+  console.log(
+    'Round each before summing      :',
+    roundEachBeforeSumming.toString(),
+  );
+  console.log(
+    'Difference (before - after)    :',
+    roundEachBeforeSumming.minus(roundAfterSumming).toString(),
+  );
+  console.log(
+    'Matches current feeRateAmount  :',
+    roundEachBeforeSumming.eq(result.feeRateAmount),
+  );
 
   console.log('\n===== STEP 1: fixed fee (feeSetting) =====');
   console.log(
@@ -214,11 +286,13 @@ function run() {
   console.log(
     `billing ${billingBn.toString()} * (feeRate ${feeSetting.feeRate} / 100) = ${billingBn
       .times(BigNumber(feeSetting.feeRate).div(100))
+      .decimalPlaces(2, BigNumber.ROUND_UP)
       .toString()}`,
   );
   console.log(
     `billing ${billingBn.toString()} * (markupFeeRate ${feeSetting.markupFeeRate} / 100) = ${billingBn
       .times(BigNumber(feeSetting.markupFeeRate).div(100))
+      .decimalPlaces(2, BigNumber.ROUND_UP)
       .toString()}`,
   );
 
@@ -234,11 +308,13 @@ function run() {
     console.log(
       `billing ${billingBn.toString()} * (feeRate ${additionalFeeSetting.feeRate} / 100) = ${billingBn
         .times(BigNumber(additionalFeeSetting.feeRate || 0).div(100))
+        .decimalPlaces(2, BigNumber.ROUND_UP)
         .toString()}`,
     );
     console.log(
       `billing ${billingBn.toString()} * (markupFeeRate ${additionalFeeSetting.markupFeeRate} / 100) = ${billingBn
         .times(BigNumber(additionalFeeSetting.markupFeeRate || 0).div(100))
+        .decimalPlaces(2, BigNumber.ROUND_UP)
         .toString()}`,
     );
   } else {

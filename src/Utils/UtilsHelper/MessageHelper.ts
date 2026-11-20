@@ -19,6 +19,14 @@ export default class MessageHelper {
     return _signDigest.serialized;
   }
 
+  public static signWithoutRecoverParam(
+    hashedMessage: string,
+    privateKey: string,
+  ) {
+    const _sign = this.sign(hashedMessage, privateKey);
+    return _sign.substring(0, 130);
+  }
+
   public static createRequestHeader(
     privateKey: string,
     address: string,
@@ -36,6 +44,33 @@ export default class MessageHelper {
       _dataStr,
     );
     const Signature = this.sign(Hash, privateKey);
+    const headers = {
+      'X-Message-Address': address,
+      'X-Message-Timestamp': timeStamp,
+      'X-Message-Session': session,
+      'X-Message-Sequence': sequence,
+      'X-Message-Signature': Signature,
+    };
+    return headers;
+  }
+
+  public static createRequestHeaderWithoutRecoverParam(
+    privateKey: string,
+    address: string,
+    session: string,
+    sequence: number,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data: any,
+  ) {
+    const timeStamp = moment().valueOf().toString();
+    const _dataStr = !data || data === '' ? '' : JSON.stringify(data);
+    const Hash = this.genHashedMessage(
+      timeStamp,
+      session,
+      sequence.toString(),
+      _dataStr,
+    );
+    const Signature = this.signWithoutRecoverParam(Hash, privateKey);
     const headers = {
       'X-Message-Address': address,
       'X-Message-Timestamp': timeStamp,
